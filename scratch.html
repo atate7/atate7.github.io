@@ -101,6 +101,127 @@
             "https://public.tableau.com/javascripts/api/viz_v1.js"
           vizElement.parentNode.insertBefore(scriptElement, vizElement)
         </script>
+
+        <div style="display: flex; flex-direction: column; align-items: center">
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              margin: 0;
+              background-color: #121213;
+              color: white;
+            }
+            #board {
+              display: grid;
+              grid-template-columns: repeat(5, 60px);
+              grid-gap: 10px;
+              margin-bottom: 20px;
+            }
+            .tile {
+              width: 60px;
+              height: 60px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 2em;
+              border: 2px solid #3a3a3c;
+              text-transform: uppercase;
+            }
+            .correct {
+              background-color: #538d4e;
+              border: none;
+            }
+            .present {
+              background-color: #b59f3b;
+              border: none;
+            }
+            .absent {
+              background-color: #3a3a3c;
+              border: none;
+            }
+            input {
+              font-size: 1.5em;
+              text-transform: uppercase;
+              padding: 5px;
+              width: 120px;
+              text-align: center;
+            }
+          </style>
+          <h1>Wordle Clone</h1>
+          <div id="board"></div>
+          <input
+            type="text"
+            id="guess"
+            maxlength="5"
+            autofocus
+            placeholder="Guess"
+            style="color: black"
+          />
+
+          <script>
+            const words = [
+              "apple",
+              "grape",
+              "plane",
+              "crane",
+              "flame",
+              "stone",
+              "shard",
+              "blend",
+              "trick",
+              "piano",
+            ]
+            const secret =
+              words[Math.floor(Math.random() * words.length)].toUpperCase()
+            const maxGuesses = 6
+            const board = document.getElementById("board")
+            const input = document.getElementById("guess")
+            let currentRow = 0
+
+            function addRow(guess) {
+              for (let i = 0; i < 5; i++) {
+                const tile = document.createElement("div")
+                tile.classList.add("tile")
+                tile.textContent = guess[i]
+
+                if (guess[i] === secret[i]) {
+                  tile.classList.add("correct")
+                } else if (secret.includes(guess[i])) {
+                  tile.classList.add("present")
+                } else {
+                  tile.classList.add("absent")
+                }
+
+                board.appendChild(tile)
+              }
+              currentRow++
+            }
+
+            input.addEventListener("keydown", function (e) {
+              if (e.key === "Enter") {
+                const guess = input.value.toUpperCase()
+                if (guess.length !== 5) return alert("Enter a 5-letter word")
+                if (currentRow >= maxGuesses)
+                  return alert("No more guesses left!")
+
+                addRow(guess)
+                input.value = ""
+
+                if (guess === secret) {
+                  alert("You guessed it!")
+                  input.disabled = true
+                } else if (currentRow === maxGuesses) {
+                  alert(`Out of guesses! The word was ${secret}`)
+                  input.disabled = true
+                }
+              }
+            })
+          </script>
+        </div>
       </div>
       <div id="video-container">
         <iframe
